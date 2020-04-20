@@ -1,0 +1,42 @@
+# 数据库账号密码url
+database:
+  mysql:
+    username: root
+    password: root
+    url:      jdbc:mysql://localhost:3306/zxt_tela
+  redis:
+    database: 0
+    host:     127.0.0.1
+    port:     6379
+    password:
+
+spring:
+  # 数据库配置
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${database.mysql.url}?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai
+    username: ${database.mysql.username}
+    password: ${database.mysql.password}
+  # redis配置
+  redis:
+    database: ${database.redis.database}
+    host: ${database.redis.host}
+    port: ${database.redis.port}
+    password: ${database.redis.password}
+    jedis:
+      pool:
+        max-active: 200
+        max-wait: -1
+        max-idle: 10
+        min-idle: 0
+    timeout: 1000
+
+# 用户相关设置
+user:
+  login:
+    timeout: 600
+
+# swagger配置开关
+swagger:
+  show: true

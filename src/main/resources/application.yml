@@ -1,0 +1,20 @@
+# 端口
+server:
+  port: 8082
+
+# mybatis mapper locations
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+
+# active which profile
+spring:
+  profiles:
+    active: dev
+
+# log method
+logging:
+  file: logs/demo.log
+  level:
+    com:
+      zxtnet:
+        tela: debug
