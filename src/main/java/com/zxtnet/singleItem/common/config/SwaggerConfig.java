@@ -11,6 +11,7 @@ import springfox.documentation.service.Contact;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
+
 /**
  * @description: swagger配置类
  * @author: 郭海斌
@@ -26,12 +27,12 @@ public class SwaggerConfig {
 
     @Bean
     public Docket createRestApi() {
-        //指定包位置
-        RequestHandlerSelectors.basePackage("com.zixintong.springboot.controller");
+        //  todo：指定包位置
+        RequestHandlerSelectors.basePackage("com.zxtnet.newItem.*.controller");
         return new Docket(DocumentationType.SWAGGER_2)
-                .enable(swaggerShow)
                 //apiInfo指定测试文档基本信息，这部分将在页面展示
                 .apiInfo(apiInfo())
+                .enable(swaggerShow)
                 .select()
                 //apis() 控制哪些接口暴露给swagger，
                 // RequestHandlerSelectors.any() 所有都暴露
@@ -43,8 +44,12 @@ public class SwaggerConfig {
     //基本信息，页面展示
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("测试项目标题")
-                .description("接口描述")
+                //  todo：修改成当前项目信息
+                .title("tela项目接口API")
+                .description("IP地址：\n" +
+                        "测试/前端环境：http://192.168.0.103:8078\n" +
+                        "调试/开发环境：http://192.168.0.103:8079\n" +
+                        "线上环境：待设置")
                 //联系人实体类
                 .contact(
                         new Contact("郭海斌", "网址", "guo1051127705@qq.com")

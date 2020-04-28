@@ -9,9 +9,15 @@ package com.zxtnet.singleItem.common.responseResult;
 public enum ResponseCodeEnum {
     //  成功
     OPT_SUCCESS(200, "操作成功！"),
+    AUTHORIZATION_SUCCESS(200, "授权成功！"),
 
     //  失败
-    OPT_FAILURE(444, "操作失败！");
+    OPT_FAILURE(444, "操作失败！"),
+    DB_FAILURE(444, "数据库异常，请联系客服人员！！！"),
+
+    //  需要跳转
+    NO_AUTHORIZATION(440, "未授权，请授权后使用该功能！"),
+    ;
 
     private int code;
 

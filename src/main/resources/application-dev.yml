@@ -1,14 +1,19 @@
 # 数据库账号密码url
+# todo：下面的信息全部需要修改
 database:
   mysql:
     username: root
     password: root
     url:      jdbc:mysql://localhost:3306/zxt_tela
   redis:
-    database: 0
+    database: 6
     host:     127.0.0.1
     port:     6379
     password:
+
+# swagger配置开关
+swagger:
+  show: true
 
 spring:
   # 数据库配置
@@ -31,12 +36,3 @@ spring:
         max-idle: 10
         min-idle: 0
     timeout: 1000
-
-# 用户相关设置
-user:
-  login:
-    timeout: 600
-
-# swagger配置开关
-swagger:
-  show: true

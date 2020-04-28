@@ -1,5 +1,7 @@
 package com.zxtnet.singleItem.common.responseResult;
 
+import com.zxtnet.singleItem.common.responseResult.BaseResponse;
+import com.zxtnet.singleItem.common.responseResult.ResponseCodeEnum;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 

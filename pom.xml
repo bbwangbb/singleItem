@@ -20,6 +20,8 @@
         <log4j.version>1.2.17</log4j.version>
         <fastjson.version>1.2.3</fastjson.version>
         <swagger.version>2.7.0</swagger.version>
+        <hutool.version>5.3.1</hutool.version>
+        <jdom2.version>2.0.5</jdom2.version>
     </properties>
 
     <dependencies>
@@ -108,6 +110,20 @@
             <version>${swagger.version}</version>
         </dependency>
 
+        <!--hutool工具包-->
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-all</artifactId>
+            <version>${hutool.version}</version>
+        </dependency>
+
+        <!--解析xml-->
+        <dependency>
+            <groupId>org.jdom</groupId>
+            <artifactId>jdom2</artifactId>
+            <version>${jdom2.version}</version>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -122,5 +138,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>

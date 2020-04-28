@@ -1,6 +1,10 @@
 # 端口
 server:
-  port: 8082
+  # todo：修改为当前项目端口
+  # 测试/前端调用
+  #  port: 8078
+  # 开发
+  port: 8079
 
 # mybatis mapper locations
 mybatis:
@@ -17,4 +21,5 @@ logging:
   level:
     com:
       zxtnet:
-        tela: debug
+        # todo：修改成对应目录
+        newItem: debug
