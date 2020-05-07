@@ -1,6 +1,6 @@
 package com.zxtnet.singleItem.common.exceptionHandler;
 
-import com.zxtnet.singleItem.common.responseResult.ResponseCodeEnum;
+import com.zxtnet.singleItem.common.response.base.ResponseCodeEnum;
 import lombok.Data;
 
 /**

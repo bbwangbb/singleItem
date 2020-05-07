@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 public class TemplateInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        log.info("****************************当前请求uri为：" + request.getRequestURI());
         //  请求进入前
         return false;
     }

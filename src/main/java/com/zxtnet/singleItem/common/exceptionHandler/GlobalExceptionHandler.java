@@ -1,7 +1,7 @@
 package com.zxtnet.singleItem.common.exceptionHandler;
 
-import com.zxtnet.singleItem.common.responseResult.BaseResponse;
-import com.zxtnet.singleItem.common.responseResult.ResponseCodeEnum;
+import com.zxtnet.singleItem.common.response.base.BaseResponse;
+import com.zxtnet.singleItem.common.response.base.ResponseCodeEnum;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;

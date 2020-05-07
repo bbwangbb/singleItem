@@ -6,6 +6,11 @@ server:
   # 开发
   port: 8079
 
+# 请求前缀  todo：视情况修改
+api:
+  prefix:
+    global: /api
+
 # mybatis mapper locations
 mybatis:
   mapper-locations: classpath:mapper/*.xml
