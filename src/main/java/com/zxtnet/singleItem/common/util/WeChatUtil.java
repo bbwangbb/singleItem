@@ -1,11 +1,11 @@
-package com.zxtnet.newItem.common.util;
+package com.zxtnet.singleItem.common.util;
 
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
-import com.zxtnet.newItem.common.config.WeChatParamConfig;
-import com.zxtnet.newItem.common.exceptionHandler.MsgException;
+import com.zxtnet.singleItem.common.config.WeChatParamConfig;
+import com.zxtnet.singleItem.common.exceptionHandler.MsgException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -30,13 +30,13 @@ public class WeChatUtil {
      * @param code      小程序授权传的参数
      * @return          获取信息
      */
-    public Map<String, Object> getWxUserOpenid(String code) {
+    public JSONObject ggetWxUserOpenid(String code, String appId, String appSecret) {
         //拼接url
         StringBuilder url = new StringBuilder(WeChatParamConfig.AUTHORISE_URL);
-        url.append("?appid=");//appid设置
-        url.append(WeChatParamConfig.APP_ID);
+        url.append("appid=");//appid设置
+        url.append(appId);
         url.append("&secret=");//secret设置
-        url.append(WeChatParamConfig.APP_SECRET);
+        url.append(appSecret);
         url.append("&js_code=");//code设置
         url.append(code);
         url.append("&grant_type=authorization_code");
@@ -64,12 +64,12 @@ public class WeChatUtil {
      * @param body      订单信息
      * @return          小程序调起支付页面的参数
      */
-    public Map pay(String openId, int totalFee, String orderNo, String body) {
+    public JSONObject pay(String openId, int totalFee, String orderNo, String body, String appId, String mchId, String apiKey) {
         SortedMap<Object, Object> packageParams = new TreeMap<>();
         //  微信小程序ID
-        packageParams.put("appid", WeChatParamConfig.APP_ID);
+        packageParams.put("appid", appId);
         //  商户ID
-        packageParams.put("mch_id", WeChatParamConfig.MCH_ID);
+        packageParams.put("mch_id", mchId);
         //  JSAPI必须要openid
         packageParams.put("openid", openId);
         //  随机字符串（32位以内）
@@ -85,14 +85,14 @@ public class WeChatUtil {
         //  JSAPI：微信小程序支付时使用这个
         packageParams.put("trade_type", "JSAPI");
         //  获取sign - 这个是自己在微信商户设置的32位密钥
-        String sign = PayCommonUtil.createSign("UTF-8", packageParams, WeChatParamConfig.API_KEY);
+        String sign = com.zxtnet.newItem.common.util.PayCommonUtil.createSign("UTF-8", packageParams, apiKey);
         packageParams.put("sign", sign);
         //  将参数转成XML
-        String requestXML = PayCommonUtil.getRequestXml(packageParams);
+        String requestXML = com.zxtnet.newItem.common.util.PayCommonUtil.getRequestXml(packageParams);
         //  得到含有prepay_id的XML
         String resXml = HttpRequest.post(WeChatParamConfig.PAY_URL).body(requestXML).execute().body();
         //  解析XML存入Map
-        Map map = XMLUtil.xml2Map(resXml);
+        Map map = com.zxtnet.newItem.common.util.XMLUtil.xml2Map(resXml);
         //  如果执行失败，直接报异常
         if ("FAIL".equals(map.get("return_code"))) {
             log.info("***********************支付获取参数失败，具体原因如下：");
@@ -103,19 +103,19 @@ public class WeChatUtil {
         String prepay_id = (String) map.get("prepay_id");
         SortedMap<Object, Object> packageP = new TreeMap<>();
         //  别忘了这个，也需要放进去
-        packageP.put("appId", WeChatParamConfig.APP_ID);
+        packageP.put("appId", appId);
         //  随机字符串（32位以内）
         packageP.put("nonceStr", RandomUtil.randomString(32));
         //  必须把package写成 "prepay_id="+prepay_id这种形式
         packageP.put("package", "prepay_id=" + prepay_id);
         //  paySign加密
         packageP.put("signType", "MD5");
-        //  时间戳
+        //  时间戳（这里会除1000，若需计算超时注意乘1000）
         packageP.put("timeStamp", String.valueOf((System.currentTimeMillis() / 1000)));
         //  得到paySign
-        String paySign = PayCommonUtil.createSign("UTF-8", packageP, WeChatParamConfig.API_KEY);
+        String paySign = com.zxtnet.newItem.common.util.PayCommonUtil.createSign("UTF-8", packageP, apiKey);
         packageP.put("paySign", paySign);
-        return packageP;
+        return new JSONObject(packageP);
     }
 
 }
