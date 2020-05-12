@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
+import java.sql.SQLException;
 
 /**
  * @description: 异常处理器
@@ -26,7 +27,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(value = Exception.class)
     public BaseResponse allExceptionHandler(HttpServletRequest request, Exception exception) {
-        return BaseResponse.getBaseResponse(ResponseCodeEnum.OPT_FAILURE);
+        return BaseResponse.getBaseResponse(ResponseCodeEnum.SERVER_FAILURE);
     }
 
     /**
@@ -39,7 +40,20 @@ public class GlobalExceptionHandler {
     public BaseResponse loginExceptionHandler(HttpServletRequest request, Exception exception) {
         MsgException msgException = (MsgException) exception;
         ResponseCodeEnum responseCode = msgException.getResponseCode();
-        return BaseResponse.getBaseResponse(responseCode);
+        //  如果设置了响应码对象就按照响应码对象来，否则返回提示信息
+        return responseCode == null ? BaseResponse.getBaseResponse(444, exception.getMessage()) :
+                BaseResponse.getBaseResponse(responseCode);
+    }
+
+    /**
+     * 数据库异常处理
+     * @param request       请求对象
+     * @param exception     异常对象
+     * @return              响应结果
+     */
+    @ExceptionHandler(value = SQLException.class)
+    public BaseResponse sqlExceptionHandler(HttpServletRequest request, Exception exception) {
+        return BaseResponse.getBaseResponse(ResponseCodeEnum.DB_FAILURE);
     }
 
 }

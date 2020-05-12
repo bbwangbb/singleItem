@@ -13,8 +13,9 @@ public enum ResponseCodeEnum {
     LOGIN_SUCCESS(200, "登录成功！"),
 
     //  失败
-    OPT_FAILURE(444, "操作失败，请重新尝试！"),
+    OPT_FAILURE(444, "操作失败！"),
     DB_FAILURE(444, "数据库异常，请联系客服人员！！！"),
+    SERVER_FAILURE(444, "服务器异常，正在修复服务器问题，请稍后使用！！！"),
 
     //  需要跳转
     NO_AUTHORIZATION(440, "用户未授权或授权超时，请重新授权！"),
