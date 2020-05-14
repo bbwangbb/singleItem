@@ -27,4 +27,4 @@ logging:
     com:
       zxtnet:
         # todo：修改成对应目录
-        newItem: debug
+        template: debug

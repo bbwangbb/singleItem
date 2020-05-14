@@ -6,6 +6,7 @@ import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.zxtnet.template.common.config.Constant;
 import com.zxtnet.template.common.exceptionHandler.MsgException;
+import com.zxtnet.template.common.response.base.ResponseCodeEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -30,7 +31,7 @@ public class WeChatUtil {
      * @param code      小程序授权传的参数
      * @return          获取信息
      */
-    public JSONObject ggetWxUserOpenid(String code, String appId, String appSecret) {
+    public static JSONObject getWxUserOpenid(String code, String appId, String appSecret) {
         //拼接url
         StringBuilder url = new StringBuilder(Constant.WeChat.AUTHORISE_URL);
         url.append("appid=");//appid设置
@@ -64,7 +65,7 @@ public class WeChatUtil {
      * @param body      订单信息
      * @return          小程序调起支付页面的参数
      */
-    public JSONObject pay(String openId, int totalFee, String orderNo, String body, String appId, String mchId, String apiKey) {
+    public static JSONObject pay(String openId, int totalFee, String orderNo, String body, String appId, String mchId, String apiKey) {
         SortedMap<Object, Object> packageParams = new TreeMap<>();
         //  微信小程序ID
         packageParams.put("appid", appId);
@@ -93,12 +94,8 @@ public class WeChatUtil {
         String resXml = HttpRequest.post(Constant.WeChat.PAY_URL).body(requestXML).execute().body();
         //  解析XML存入Map
         Map map = XMLUtil.xml2Map(resXml);
-        //  如果执行失败，直接报异常
-        if ("FAIL".equals(map.get("return_code"))) {
-            log.info("***********************支付获取参数失败，具体原因如下：");
-            log.info("********************************" + map.get("return_msg"));
-            throw new MsgException("服务器问题，支付获取参数失败！");
-        }
+        //  判断请求是否执行成功
+        isRequestSuccess(map);
         //  得到prepay_id
         String prepay_id = (String) map.get("prepay_id");
         SortedMap<Object, Object> packageP = new TreeMap<>();
@@ -116,6 +113,71 @@ public class WeChatUtil {
         String paySign = PayCommonUtil.createSign("UTF-8", packageP, apiKey);
         packageP.put("paySign", paySign);
         return new JSONObject(packageP);
+    }
+
+
+    /**
+     * @description:    判断业务是否成功
+     * @author 郭海斌
+     * @date 2020/5/14
+     * @param map       响应结果
+     * @return          是否成功
+     */
+    private static boolean isBizSuccess(Map map) {
+        if ("FAIL".equals(map.get("result_code"))) {
+            log.info("***********************业务处理失败，具体原因如下：" +
+                    "********************************" + map.get("err_code_des"));
+            throw new MsgException(ResponseCodeEnum.SERVER_FAILURE);
+        }
+        log.info("***********************业务成功！");
+        return true;
+    }
+
+    /**
+     * @description:    判断请求是否成功
+     * @author 郭海斌
+     * @date 2020/5/14
+     * @param map       响应结果
+     * @return          是否成功
+     */
+    public static void isRequestSuccess(Map map) {
+        if ("FAIL".equals(map.get("return_code"))) {
+            log.info("***********************请求失败，具体原因如下：" +
+                    "********************************" + map.get("return_msg"));
+            throw new MsgException(ResponseCodeEnum.SERVER_FAILURE);
+        }
+        log.info("***********************请求成功！");
+    }
+
+    /**
+     * @description:查询订单
+     *      如果订单存在会返回信息
+     *      不存在result_code = FAIL & err_code = ORDERNOTEXIST
+     * @author 郭海斌
+     * @date 2020/5/14
+     * @param orderNo   订单号
+     * @return
+     */
+    public static JSONObject queryOrder(String orderNo, String appId, String mchId, String apiKey) {
+        SortedMap<Object, Object> packageParams = new TreeMap<>();
+        //  微信小程序ID
+        packageParams.put("appid", appId);
+        //  商户ID
+        packageParams.put("mch_id", mchId);
+        //  随机字符串（32位以内）
+        packageParams.put("nonce_str", RandomUtil.randomString(32));
+        //  订单编号
+        packageParams.put("out_trade_no", orderNo);
+        //  获取sign - 这个是自己在微信商户设置的32位密钥
+        String sign = PayCommonUtil.createSign("UTF-8", packageParams, apiKey);
+        packageParams.put("sign", sign);
+        String requestXML = PayCommonUtil.getRequestXml(packageParams);
+        String resXml = HttpRequest.post(Constant.WeChat.QUERY_ORDER_URL).body(requestXML).execute().body();
+        System.err.println(resXml);
+        //  解析XML存入Map
+        Map map = map = XMLUtil.xml2Map(resXml);
+        isRequestSuccess(map);
+        return new JSONObject(map);
     }
 
 }

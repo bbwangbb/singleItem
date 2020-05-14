@@ -45,8 +45,11 @@ public class Constant {
         //  支付url
         public static final String PAY_URL = "https://api.mch.weixin.qq.com/pay/unifiedorder";
 
+        //  查询订单状态url
+        public static final String QUERY_ORDER_URL = "https://api.mch.weixin.qq.com/pay/orderquery";
+
         //  todo：支付回调url，需要修改
-        public static final String PAY_CALLBACK_URL = "http://t.zxtnet.com:8082/pay/wxPayForUnlockCallback";
+        public static final String PAY_CALLBACK_URL = "http://t.zxtnet.com/api/pay/payCallback";
     }
 
 }
